@@ -1,0 +1,5 @@
+.env
+.env.development
+dist
+node_modules
+temp.ts
