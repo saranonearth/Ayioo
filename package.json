@@ -2,10 +2,12 @@
   "name": "Ayioo",
   "version": "1.0.0",
   "description": "Logs you server logs on Discord",
-  "main": "dev.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "dev": "nodemon --config nodemon.json example/dev.ts",
-    "dev:debug": "nodemon --config nodemon.json --inspect-brk example/dev.ts"
+    "dev:debug": "nodemon --config nodemon.json --inspect-brk example/dev.ts",
+    "build": "tsc"
   },
   "keywords": [
     "discord-logger",

@@ -1,69 +1,53 @@
-import { _Ayioo } from './../index';
+import { _Ayioo } from '../logger/index';
 import { IncomingMessage, ServerResponse } from "http";
 
-import {Ayioo} from '../index';
+import {Ayioo} from '../logger/index';
 
 
 export interface _AyiooCatchOptions {
     token:string,
     channelId: string,
-    instance?: _Ayioo
+    instance?: boolean
 
 }
 
-const AyiooCatch = (options: Readonly<_AyiooCatchOptions>) =>{
+export const AyiooCatch = (options: Readonly<_AyiooCatchOptions>) =>{
 
     const {token,channelId,instance} = options;
 
     if(!instance){
-        Ayioo.configure(token,channelId);
+        Ayioo.configure({
+            token,
+            channelID: channelId
+        });
     }
 
     const log = (_req:IncomingMessage, _res:ServerResponse, _errorMessage:string, _reqStart:number, _body:any) => {
     const { rawHeaders, httpVersion, method, socket, url } = _req;
-    const { remoteAddress, remoteFamily } = socket;
-
+    let { remoteAddress, remoteFamily } = socket;
+    remoteAddress = JSON.stringify(remoteAddress);
+    remoteFamily = JSON.stringify(remoteFamily);
     const { statusCode, statusMessage } = _res;
-    const headers = _res.getHeaders();
+    let headers = JSON.stringify(_res.getHeaders());
 
+    const processingTime = Date.now() - _reqStart;
+        
+    let logMessage:string;
 
-    Ayioo.error(      JSON.stringify({
-            timestamp: Date.now(),
-            processingTime: Date.now() - _reqStart,
-            rawHeaders,
-            body:_body,
-            errorMessage:_errorMessage,
-            httpVersion,
-            method,
-            remoteAddress,
-            remoteFamily,
-            url,
-            response: {
-                statusCode,
-                statusMessage,
-                headers
-            }
-        }))
+    if(_errorMessage){
+        logMessage = `X-[${new Date().toUTCString()}]~${statusCode}~${statusMessage}~${new Date(processingTime).getSeconds()}secs-${method}->${url}-httpV:${ httpVersion}-headers:${rawHeaders}-body:${_body}-error-msg:${_errorMessage}-${remoteAddress}-${remoteFamily}-responseHeaders:${headers}`
+         Ayioo.error(logMessage);
 
-    console.log(
-        JSON.stringify({
-            timestamp: Date.now(),
-            processingTime: Date.now() - _reqStart,
-            rawHeaders,
-            body:_body,
-            errorMessage:_errorMessage,
-            httpVersion,
-            method,
-            remoteAddress,
-            remoteFamily,
-            url,
-            response: {
-                statusCode,
-                statusMessage,
-                headers
-            }
-        })
-      );
+    }else if(statusCode===404){
+        logMessage = `X-[${new Date().toUTCString()}]~${statusCode}~${statusMessage}~${new Date(processingTime).getSeconds()}secs-${method}->${url}-httpV:${ httpVersion}-headers:${rawHeaders}-body:${_body}-${remoteAddress}-${remoteFamily}-responseHeaders:${headers}`
+         Ayioo.warn(`${logMessage}`);
+    }else {
+        logMessage = `X-[${new Date().toUTCString()}]~${statusCode}~${statusMessage}~${new Date(processingTime).getSeconds()}secs-${method}->${url}-httpV:${ httpVersion}-headers:${rawHeaders}-body:${_body}-error-msg:${_errorMessage}-${remoteAddress}-${remoteFamily}-responseHeaders:${headers}`
+         Ayioo.log(logMessage);
+    }
+
+   
+
     };
     
     
@@ -72,13 +56,13 @@ const AyiooCatch = (options: Readonly<_AyiooCatchOptions>) =>{
             const _reqStart:number = Date.now();
 
             let body:any = [];
-            let _reqErrorMessage:string = null;
+            let _reqErrorMessage:string = "";
 
-            const getChunk = chunk => body.push(chunk);
+            const getChunk = (chunk:any) => body.push(chunk);
             const assembleBody = () => {
                 body = Buffer.concat(body).toString();
             };
-            const getError = error => {
+            const getError = (error:any) => {
                 _reqErrorMessage = error.message;
             };
             _req.on("data", getChunk);
@@ -89,7 +73,7 @@ const AyiooCatch = (options: Readonly<_AyiooCatchOptions>) =>{
                 removeHandlers();
                 log(_req, _res, "Client aborted.", _reqStart, body);
             };
-            const logError = error => {
+            const logError = (error:any) => {
                 removeHandlers();
                 log(_req, _res, error.message, _reqStart, body);
             };
@@ -114,5 +98,3 @@ const AyiooCatch = (options: Readonly<_AyiooCatchOptions>) =>{
             next();
     }
 }
-
-export default AyiooCatch;
