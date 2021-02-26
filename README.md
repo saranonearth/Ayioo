@@ -15,7 +15,7 @@ Ayioo also provides a http middleware which logs requests and responses out of t
 
 ```js
 
-import {Ayioo} from 'Ayioo'
+import {Ayioo} from 'ayiooo'
 
 
 Ayioo.configure({
@@ -37,7 +37,7 @@ Ayioo.error("error🚨");
 
 ```js
 import express from 'express'
-import {AyiooCatch} from 'Ayioo'
+import {AyiooCatch} from 'ayiooo'
 
 const app = express()
 const port = 3001
