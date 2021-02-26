@@ -1,7 +1,7 @@
 {
-  "name": "Ayioo",
-  "version": "1.0.0",
-  "description": "Logs you server logs on Discord",
+  "name": "ayioo",
+  "version": "1.0.1",
+  "description": "Logs your server logs on Discord⚡️",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -12,7 +12,9 @@
   "keywords": [
     "discord-logger",
     "ayioo",
-    "saranonearth"
+    "saranonearth",
+    "express-middleware",
+    "serverless-logger"
   ],
   "author": "saranonearth",
   "license": "ISC",
