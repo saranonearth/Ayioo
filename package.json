@@ -1,6 +1,6 @@
 {
   "name": "ayiooo",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Logs your server logs on Discord⚡️",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,6 +20,10 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^12.5.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saranonearth/Ayioo"
   },
   "devDependencies": {
     "@types/node": "^14.14.31",
