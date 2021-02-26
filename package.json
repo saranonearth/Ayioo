@@ -1,6 +1,6 @@
 {
   "name": "ayioo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Logs your server logs on Discord⚡️",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
